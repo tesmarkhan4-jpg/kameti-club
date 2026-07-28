@@ -1,0 +1,22 @@
+{
+  "name": "kameti-club",
+  "version": "1.0.0",
+  "description": "Premium Kameti Club - Rotating Savings & Credit Association Tracker with AI Follow-ups and Chat Support",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "kameti",
+    "rosca",
+    "savings",
+    "fintech"
+  ],
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14"
+  },
+  "author": "Kameti Developer",
+  "license": "MIT"
+}

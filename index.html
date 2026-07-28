@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kameti Club - Premium Rotating Savings & Kametis</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-brand" onclick="app.navigateTo('home')">
+        <img src="logo.png" alt="Kameti Club Logo" class="nav-logo" style="width: 38px; height: 38px; object-fit: contain; border-radius: 8px; background: white; padding: 2px; border: 1px solid var(--card-border);">
+        <span class="nav-title">Kameti Club</span>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-time" id="navClock">2026-07-29 00:00:00</div>
+        <div class="nav-menu" id="navMenu">
+          <button class="btn btn-ghost" onclick="app.navigateTo('home')">Home</button>
+          <button class="btn btn-outline" onclick="app.navigateTo('login')">Login</button>
+          <button class="btn btn-primary" onclick="app.navigateTo('register')">Get Started</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Views Area -->
+    <main class="main-content">
+
+      <!-- Landing/Home View -->
+      <section id="view-home" class="view-section active">
+        <div class="hero-container animate-fade-in">
+          <div class="hero-text">
+            <h1>Save & Grow Together with <span>Kameti Club</span></h1>
+            <p>Pakistan's premium digital Kameti Club coordinator. Join secure groups from Rs. 20,000 to Rs. 200,000. Track payments, request urgent payouts, and communicate with dedicated support.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary btn-primary" style="padding: 0.9rem 2rem; font-size: 1.05rem;" onclick="app.navigateTo('register')">Register Your Account</button>
+              <button class="btn btn-outline" style="padding: 0.9rem 2rem; font-size: 1.05rem;" onclick="app.navigateTo('login')">Access Portal</button>
+            </div>
+          </div>
+          <div class="hero-graphic animate-float" style="display: flex; justify-content: center;">
+            <div style="background: white; border: 1.5px solid var(--card-border); padding: 2rem; border-radius: 24px; box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; position: relative;">
+              <div style="position: absolute; top: -15px; right: -15px; width: 45px; height: 45px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);"><i class="fa-solid fa-chart-line"></i></div>
+              <h3 style="margin-bottom: 1rem; border-bottom: 1.5px solid #f1f5f9; padding-bottom: 0.5rem; font-size: 1.3rem;"><i class="fa-solid fa-circle-check" style="color: var(--primary); margin-right: 0.5rem;"></i> App Statistics</h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="width: 44px; height: 44px; background: rgba(16, 185, 129, 0.08); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-users"></i></div>
+                  <div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Verified Savers</div>
+                    <div id="landingStatsUsers" style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); font-family: 'Outfit', sans-serif;">Loading...</div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="width: 44px; height: 44px; background: rgba(14, 165, 233, 0.08); color: var(--secondary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-cubes"></i></div>
+                  <div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Active Batches</div>
+                    <div id="landingStatsGroups" style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); font-family: 'Outfit', sans-serif;">Loading...</div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="width: 44px; height: 44px; background: rgba(245, 158, 11, 0.08); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-vault"></i></div>
+                  <div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Disbursed Volume</div>
+                    <div id="landingStatsDisbursed" style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); font-family: 'Outfit', sans-serif;">Loading...</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1.5rem; font-size: 0.8rem; text-align: center; color: var(--text-muted); border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--primary); margin-right: 0.25rem;"></i> Transparent Peer-to-Peer Saver Coordinator
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-features animate-fade-in">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-people-group"></i></div>
+            <h3>10-Member Groups</h3>
+            <p>Each kameti group runs strictly with 10 verified members, rotating payouts monthly for 10 months.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-wallet"></i></div>
+            <h3>P2P Bank & Wallet Transfers</h3>
+            <p>Pay manually via EasyPaisa, JazzCash, NayaPay, SadaPay, or any Pakistani Bank. Safe and recorded track-keeping.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+            <h3>Strict Terms & Penalties</h3>
+            <p>Deadline before 10th of every month. Defaulting incurs Rs. 500 per day overcharge and legal agreement enforcement.</p>
+          </div>
+        </div>
+
+        <!-- Dynamic Available Kametis Section -->
+        <div class="public-kametis-section" style="margin-top: 4rem; margin-bottom: 2rem;">
+          <div style="text-align: center; margin-bottom: 2.5rem;">
+            <span class="group-tag-inline" style="background: rgba(16, 185, 129, 0.08); color: var(--primary); font-size: 0.85rem; font-weight: bold; padding: 0.35rem 1rem; border-radius: 30px; text-transform: uppercase;">Recruiting Batches</span>
+            <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-top: 0.75rem; font-family: 'Outfit', sans-serif;">Explore Available Kametis</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; margin-top: 0.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">Join one of our secure, peer-to-peer kameti saving pools. The rotation sequence is automatically generated when 10 members complete a batch.</p>
+          </div>
+          <div id="publicGroupsList" class="group-grid">
+            <!-- Rendered dynamically in 3 columns via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Register View -->
+      <section id="view-register" class="view-section">
+        <div class="auth-wrapper glass-panel animate-scale-in">
+          <div class="auth-header">
+            <h2>Create Account</h2>
+            <p>Enter your details and upload your identity documents to start saving</p>
+          </div>
+          <form id="registerForm" onsubmit="app.handleRegister(event)">
+            <div class="form-grid">
+              <!-- Personal Details -->
+              <div class="form-group">
+                <label class="form-label">Full Name <span class="required">*</span></label>
+                <input type="text" id="regName" class="form-control" placeholder="Muhammad Ali" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address <span class="required">*</span></label>
+                <input type="email" id="regEmail" class="form-control" placeholder="ali@gmail.com" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Active WhatsApp Number <span class="required">*</span></label>
+                <input type="tel" id="regWhatsApp" class="form-control" placeholder="03001234567" required>
+              </div>
+
+              <!-- CNIC Picture Uploads -->
+              <div class="form-group full-width">
+                <label class="form-label">CNIC Front & Back Pictures <span class="required">*</span></label>
+                <div class="upload-row">
+                  <div class="cnic-upload-box">
+                    <i class="fa-solid fa-id-card icon"></i>
+                    <p>CNIC Front Side</p>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Drop or Browse Image</span>
+                    <input type="file" id="cnicFrontFile" accept="image/*" onchange="app.handleCNICUpload(event, 'front')" required>
+                    <img id="cnicFrontPreview" class="cnic-preview" alt="Front Preview">
+                  </div>
+                  <div class="cnic-upload-box">
+                    <i class="fa-solid fa-id-card icon"></i>
+                    <p>CNIC Back Side</p>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Drop or Browse Image</span>
+                    <input type="file" id="cnicBackFile" accept="image/*" onchange="app.handleCNICUpload(event, 'back')" required>
+                    <img id="cnicBackPreview" class="cnic-preview" alt="Back Preview">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payout Account Selection -->
+              <div class="form-group full-width">
+                <label class="form-label">Payout Receiver Account Details <span class="required">*</span></label>
+                <select id="payoutMethod" class="form-control" onchange="app.toggleBankDropdown(this.value)" required>
+                  <option value="" disabled selected>Select Wallet/Bank</option>
+                  <option value="EasyPaisa">EasyPaisa</option>
+                  <option value="JazzCash">JazzCash</option>
+                  <option value="NayaPay">NayaPay</option>
+                  <option value="SadaPay">SadaPay</option>
+                  <option value="Bank">Bank Account</option>
+                </select>
+              </div>
+
+              <!-- Conditional Bank Selector (Initially hidden in JS state) -->
+              <div class="form-group full-width" id="bankSelectGroup" style="display: none;">
+                <label class="form-label">Select Pakistani Bank <span class="required">*</span></label>
+                <select id="bankName" class="form-control">
+                  <option value="" disabled selected>Choose Bank</option>
+                  <option value="Meezan Bank">Meezan Bank Limited</option>
+                  <option value="Habib Bank Limited (HBL)">Habib Bank Limited (HBL)</option>
+                  <option value="United Bank Limited (UBL)">United Bank Limited (UBL)</option>
+                  <option value="MCB Bank Limited">MCB Bank Limited</option>
+                  <option value="Allied Bank Limited">Allied Bank Limited</option>
+                  <option value="Bank Alfalah">Bank Alfalah</option>
+                  <option value="Faysal Bank">Faysal Bank</option>
+                  <option value="Bank of Punjab (BOP)">Bank of Punjab (BOP)</option>
+                  <option value="Askari Bank">Askari Bank</option>
+                  <option value="Standard Chartered Bank">Standard Chartered Bank</option>
+                  <option value="JS Bank">JS Bank</option>
+                  <option value="Soneri Bank">Soneri Bank</option>
+                  <option value="Dubai Islamic Bank">Dubai Islamic Bank</option>
+                  <option value="Habib Metropolitan Bank">Habib Metropolitan Bank</option>
+                </select>
+              </div>
+
+              <!-- Payout Details text fields -->
+              <div class="form-group" id="accTitleGroup">
+                <label class="form-label">Account Title <span class="required">*</span></label>
+                <input type="text" id="accTitle" class="form-control" placeholder="Muhammad Ali" required>
+              </div>
+              <div class="form-group" id="accNumGroup">
+                <label class="form-label">Account / Mobile Number <span class="required">*</span></label>
+                <input type="text" id="accNumber" class="form-control" placeholder="03001234567 or Bank Account No" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">IBAN <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(Optional)</span></label>
+                <input type="text" id="accIban" class="form-control" placeholder="PK00MEZN0000000000000000">
+              </div>
+
+              <!-- Passwords -->
+              <div class="form-group">
+                <label class="form-label">Setup Password <span class="required">*</span></label>
+                <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password <span class="required">*</span></label>
+                <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <!-- Mandatory Legal Aggrement checkboxes -->
+            <div class="agreement-container">
+              <label class="checkbox-label">
+                <input type="checkbox" id="agreeTerms" onchange="app.toggleRegisterBtn()">
+                <span>I explicitly agree and bind myself to the <a href="javascript:void(0)" onclick="app.openModal('modal-terms')">Terms & Conditions</a> of Kameti Club, including the Rs. 100 admin fee, Rs. 500/day late penalty, and consent to regulatory/recovery measures in case of default.</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="agreePrivacy" onchange="app.toggleRegisterBtn()">
+                <span>I consent to the <a href="javascript:void(0)" onclick="app.openModal('modal-privacy')">Privacy Policy</a> regarding my CNIC biometric images, personal detail storage, and financial details verification.</span>
+              </label>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
+              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary" style="flex: 1; padding: 0.8rem;" disabled>Submit & Request OTP</button>
+              <button type="button" class="btn btn-ghost" onclick="app.navigateTo('login')">Already have an account? Login</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- OTP Verification View -->
+      <section id="view-otp" class="view-section">
+        <div class="otp-container glass-panel animate-scale-in">
+          <div class="otp-icon"><i class="fa-solid fa-envelope-circle-check"></i></div>
+          <h2>Enter Verification Code</h2>
+          <p>We've sent a 6-digit OTP verification code to your email address: <strong id="otpEmailLabel">user@example.com</strong>.</p>
+          
+          <div class="info-alert" style="margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-envelope"></i>
+            <span>Please check your email inbox (including the spam/junk folder) for the verification code.</span>
+          </div>
+
+          <div id="mockOtpCode" style="display: none;"></div>
+
+          <form onsubmit="app.handleOtpVerify(event)">
+            <div class="otp-box-container">
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'otp2')" id="otp1" required>
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'otp3')" id="otp2" required>
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'otp4')" id="otp3" required>
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'otp5')" id="otp4" required>
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'otp6')" id="otp5" required>
+              <input type="text" class="otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, null)" id="otp6" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Verify & Complete Registration</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Login View -->
+      <section id="view-login" class="view-section">
+        <div class="auth-wrapper glass-panel animate-scale-in" style="max-width: 480px;">
+          <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Access your kameti dashboard and manage your transfers</p>
+          </div>
+          <form onsubmit="app.handleLogin(event)">
+            <div class="form-group">
+              <label class="form-label">Registered Email</label>
+              <input type="email" id="loginEmail" class="form-control" placeholder="yourname@gmail.com" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label class="form-label">Password</label>
+              <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem;">Login</button>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: center; font-size: 0.9rem;">
+              <a href="javascript:void(0)" onclick="app.navigateTo('register')" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create a new account</a>
+              <div style="border-top: 1px solid #f1f5f9; margin-top: 1rem; padding-top: 1rem; color: var(--text-muted); font-size: 0.8rem;">
+                <strong>Demo Accounts:</strong><br>
+                User: <span>user@Kameti.com</span> / Password: <span>user123</span><br>
+                Admin: <span>admin@Kameti.com</span> / Password: <span>admin</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- User Dashboard View -->
+      <section id="view-user-dashboard" class="view-section">
+        <div class="dashboard-grid">
+          <!-- User Sidebar -->
+          <aside class="dashboard-sidebar">
+            <div class="sidebar-profile">
+              <span class="name" id="userProfileName">Muhammad Ali</span>
+              <span class="role">Verified Member</span>
+            </div>
+            <a class="sidebar-link active" onclick="app.switchUserPane('user-overview', this)"><i class="fa-solid fa-chart-line"></i> Overview</a>
+            <a class="sidebar-link" onclick="app.switchUserPane('user-kametis', this)"><i class="fa-solid fa-people-roof"></i> Join Kametis</a>
+            <a class="sidebar-link" onclick="app.switchUserPane('user-payments', this)"><i class="fa-solid fa-credit-card"></i> Pay Monthly Fee</a>
+            <a class="sidebar-link" onclick="app.switchUserPane('user-urgent', this)"><i class="fa-solid fa-bolt"></i> Urgent Requests</a>
+            <a class="sidebar-link" onclick="app.switchUserPane('user-support', this)"><i class="fa-solid fa-headset"></i> Support Desk</a>
+            <a class="sidebar-link" onclick="app.handleLogout()" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+          </aside>
+
+          <!-- User Panes Container -->
+          <div class="dashboard-content">
+            
+            <!-- User Overview Pane -->
+            <div id="pane-user-overview" class="dashboard-pane active">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">Welcome Back, <span id="userOverviewWelcomeName" style="color: var(--primary);">Muhammad</span>!</h2>
+              
+              <div class="stats-row">
+                <div class="stats-card">
+                  <span class="title">My Kameti Limit</span>
+                  <span class="value" id="userOverviewTotalLimit">Rs. 0</span>
+                  <span class="desc">Active Rotating Capacity</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Monthly Due Amount</span>
+                  <span class="value" id="userOverviewDueAmt">Rs. 0</span>
+                  <span class="desc">Includes Rs. 100 Service Fee</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Your Draw Month</span>
+                  <span class="value" id="userOverviewDrawMonth">Not Joined</span>
+                  <span class="desc">Rotation Payout Month</span>
+                </div>
+              </div>
+
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-university" style="color: var(--primary); margin-right: 0.5rem;"></i> My Receiving Account details</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.95rem;">
+                  <div><strong>Method:</strong> <span id="userPayoutMethod">Bank Account</span></div>
+                  <div id="userBankDetailsDiv"><strong>Bank Name:</strong> <span id="userPayoutBank">Meezan Bank</span></div>
+                  <div><strong>Account Title:</strong> <span id="userPayoutTitle">Muhammad Ali</span></div>
+                  <div><strong>Account/Mobile Number:</strong> <span id="userPayoutNumber">1234567890</span></div>
+                  <div class="full-width" style="grid-column: span 2;"><strong>IBAN:</strong> <span id="userPayoutIban">PK00MEZN00000000000</span></div>
+                </div>
+              </div>
+
+              <div class="glass-panel">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-receipt" style="color: var(--primary); margin-right: 0.5rem;"></i> Recent Payment Log</h3>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Kameti Group</th>
+                        <th>Month Cycle</th>
+                        <th>Amount Paid</th>
+                        <th>Admin Fee</th>
+                        <th>Late Fee Penalty</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="userOverviewPaymentsTable">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Kametis Selection Pane -->
+            <div id="pane-user-kametis" class="dashboard-pane">
+              <h2 style="margin-bottom: 0.5rem; font-size: 1.8rem;">Available Kameti Groups</h2>
+              <p style="color: var(--text-muted); margin-bottom: 2rem;">Each group consists of 10 verified members. The rotation starts automatically once 10 members join.</p>
+              
+              <div class="group-grid" id="availableGroupsContainer">
+                <!-- Group cards will be generated dynamically by app.js -->
+              </div>
+
+              <h2 style="margin-top: 3rem; margin-bottom: 1rem; font-size: 1.8rem;">My Joined Kametis</h2>
+              <div id="myJoinedKametisContainer">
+                <!-- Display active state of kametis joined -->
+              </div>
+            </div>
+
+            <!-- User Payments Center -->
+            <div id="pane-user-payments" class="dashboard-pane">
+              <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">Monthly Kameti Payment Portal</h2>
+              
+              <div class="info-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span><strong>Deadline Reminder:</strong> Payments must be made on or before the **10th of each month**. Late payments automatically charge a flat **Rs. 500 per day late fee** and activate default notices under your signed agreement.</span>
+              </div>
+
+              <div class="glass-panel" style="max-width: 600px; margin-top: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-money-bill-transfer" style="color: var(--primary); margin-right: 0.5rem;"></i> Step 1: Transfer Funds Externally</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Please send the correct amount to the Admin's account using your Bank or Wallet app:</p>
+                
+                <div style="background: rgba(16, 185, 129, 0.05); padding: 1.25rem; border-radius: 12px; border: 1.5px solid rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                  <div><strong>EasyPaisa Wallet:</strong> 0312-3456789 (Title: Kameti Admin Account)</div>
+                  <div><strong>JazzCash Wallet:</strong> 0321-9876543 (Title: Kameti Admin Account)</div>
+                  <div><strong>Bank Account:</strong> Meezan Bank Ltd | Acc No: 0284-0102030405 (Title: Kameti Admin Ltd)</div>
+                </div>
+
+                <form onsubmit="app.handleUserPaymentSubmit(event)">
+                  <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-file-invoice" style="color: var(--primary); margin-right: 0.5rem;"></i> Step 2: Log Payment Verification</h3>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Select Joined Kameti Group <span class="required">*</span></label>
+                    <select id="payGroupSelector" class="form-control" onchange="app.updatePaymentMonthsSelector(this.value)" required>
+                      <!-- Populated via JS -->
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Cycle Month of Kameti <span class="required">*</span></label>
+                    <select id="payMonthSelector" class="form-control" onchange="app.updatePaymentCalculator()" required>
+                      <option value="" disabled selected>Select Group First</option>
+                    </select>
+                  </div>
+
+                  <!-- Date Simulator Selector to test late fees -->
+                  <div class="form-group">
+                    <label class="form-label">Simulate Date of Payment <span class="required">*</span></label>
+                    <input type="date" id="paySimulateDate" class="form-control" onchange="app.updatePaymentCalculator()" required>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">(Change this past the 10th of the month to see Rs. 500/day penalty calculation)</span>
+                  </div>
+
+                  <!-- Dynamic Payment Calculator Summary Card -->
+                  <div class="payment-details-card" id="paymentCalcCard">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                      <span>Base Kameti Deposit:</span>
+                      <strong id="calcBaseAmt">Rs. 0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                      <span>App Service Fee:</span>
+                      <strong>Rs. 100</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #ef4444;" id="calcLateFeeRow">
+                      <span>Late Payment Penalty (Rs. 500/day):</span>
+                      <strong id="calcLateFeeAmt">Rs. 0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 1.5px solid rgba(16, 185, 129, 0.15); padding-top: 0.5rem; font-size: 1.1rem; color: var(--primary);">
+                      <span>Total Amount to Pay:</span>
+                      <strong id="calcTotalAmt">Rs. 0</strong>
+                    </div>
+                  </div>
+
+                  <div class="form-grid" style="margin-top: 1rem;">
+                    <div class="form-group">
+                      <label class="form-label">Transaction ID / TxID <span class="required">*</span></label>
+                      <input type="text" id="payTxid" class="form-control" placeholder="1029384756" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Upload Transfer Receipt <span class="required">*</span></label>
+                      <input type="file" id="payReceiptFile" class="form-control" accept="image/*" required>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.8rem;">Submit Payment Verification</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- User Urgent Payout Request Pane -->
+            <div id="pane-user-urgent" class="dashboard-pane">
+              <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">Request Urgent Payout</h2>
+              
+              <div class="info-alert">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span><strong>Approval Conditions:</strong> Urgent payouts swap your assigned month with next month's winner. This depends entirely on next month's scheduled member accepting the swap, and final approval by the Admin.</span>
+              </div>
+
+              <div class="glass-panel" style="max-width: 600px; margin-top: 1.5rem;">
+                <form onsubmit="app.handleUrgentRequestSubmit(event)">
+                  <div class="form-group">
+                    <label class="form-label">Select Active Kameti Group <span class="required">*</span></label>
+                    <select id="urgentGroupSelector" class="form-control" required>
+                      <!-- Populated via JS -->
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Explain Reason for Urgent Payout Next Month <span class="required">*</span></label>
+                    <textarea id="urgentReason" class="form-control" rows="5" placeholder="Please explain the urgent financial need or emergency (e.g. medical bills, business expenses, tuition fees)..." style="resize: none;" required></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">Submit Urgent Payout Request</button>
+                </form>
+              </div>
+
+              <h2 style="margin-top: 3rem; margin-bottom: 1rem; font-size: 1.8rem;">My Submitted Requests</h2>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date Submitted</th>
+                      <th>Kameti Group</th>
+                      <th>Reason Submitted</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userUrgentRequestsTable">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- User Support Chat Pane -->
+            <div id="pane-user-support" class="dashboard-pane">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">Dedicated Support Chat</h2>
+              <div class="chat-container">
+                <div class="chat-header">
+                  <div class="chat-header-user">
+                    <div class="chat-avatar">A</div>
+                    <div>
+                      <h4>Kameti Support Desk</h4>
+                      <p><i class="fa-solid fa-circle"></i> Online</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-body" id="userChatBody">
+                  <!-- Messages populated via JS -->
+                </div>
+                <form class="chat-footer" onsubmit="app.sendUserMessage(event)">
+                  <input type="text" id="userChatInput" class="chat-input" placeholder="Type your issue here..." required>
+                  <button type="submit" class="btn btn-primary" style="border-radius: 12px; width: 50px; height: 46px; padding: 0;"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Admin Dashboard View -->
+      <section id="view-admin-dashboard" class="view-section">
+        <div class="dashboard-grid">
+          <!-- Admin Sidebar -->
+          <aside class="dashboard-sidebar">
+            <div class="sidebar-profile">
+              <span class="name">System Admin</span>
+              <span class="role" style="background: rgba(14, 165, 233, 0.08); color: var(--secondary);">App Overseer</span>
+            </div>
+            <a class="sidebar-link active" onclick="app.switchAdminPane('admin-overview', this)"><i class="fa-solid fa-sliders"></i> Overview</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-users', this)"><i class="fa-solid fa-user-shield"></i> Registered Users</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-groups', this)"><i class="fa-solid fa-people-roof"></i> Running Groups</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-payouts', this)"><i class="fa-solid fa-hand-holding-dollar"></i> Payout Control</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-support', this)"><i class="fa-solid fa-comments"></i> Support Desk</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-emails', this)"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Email Gen</a>
+            <a class="sidebar-link" onclick="app.handleLogout()" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+          </aside>
+
+          <!-- Admin Panes Container -->
+          <div class="dashboard-content">
+            
+            <!-- Admin Overview Pane -->
+            <div id="pane-admin-overview" class="dashboard-pane active">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">System Administration Console</h2>
+              
+              <div class="stats-row">
+                <div class="stats-card">
+                  <span class="title">Total Registrations</span>
+                  <span class="value" id="adminTotalUsers">0</span>
+                  <span class="desc">Verified Users & Applicants</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Active Groups</span>
+                  <span class="value" id="adminTotalGroups">0</span>
+                  <span class="desc">Kametis In Progress</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Total Collected</span>
+                  <span class="value" id="adminTotalFunds">Rs. 0</span>
+                  <span class="desc">Admin service fees and capital</span>
+                </div>
+              </div>
+
+              <!-- System Clock Simulator -->
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> System Clock Simulator (Pakistan Time)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                  Use this simulator to test critical dates. Advancing the simulated date to the **10th of the month past 10:00 AM** will automatically suspend all unpaid members. Advancing past **11:00 AM** will auto-disburse payouts to scheduled winners.
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+                  <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 220px;">
+                    <label class="form-label" style="margin-bottom: 0.25rem;">Simulate System Date & Time</label>
+                    <input type="datetime-local" id="simulatedClockInput" class="form-control">
+                  </div>
+                  <button type="button" class="btn btn-secondary" onclick="app.applySimulatedTime()">Apply Simulated Time</button>
+                  <button type="button" class="btn btn-outline" onclick="app.resetSimulatedTime()">Reset to Real Time</button>
+                </div>
+              </div>
+
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-business-time" style="color: var(--primary); margin-right: 0.5rem;"></i> Awaiting Payment Approvals</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Inspect transaction IDs and confirm receipt in your actual banking accounts before approving.</p>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>User Name</th>
+                        <th>Kameti Group</th>
+                        <th>Cycle Month</th>
+                        <th>Total Logged</th>
+                        <th>TxID</th>
+                        <th>Receipt Preview</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="adminOverviewPendingPaymentsTable">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="glass-panel">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-truck-ramp-box" style="color: var(--primary); margin-right: 0.5rem;"></i> Scheduled Payout Disbursements (10th of Month)</h3>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Recipient</th>
+                        <th>Group Name</th>
+                        <th>Month Cycle</th>
+                        <th>Payout Capital</th>
+                        <th>Receiving Account Details</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="adminOverviewPayoutsTable">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Registered Users Directory -->
+            <div id="pane-admin-users" class="dashboard-pane">
+              <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">Registered Member Directory</h2>
+              <div class="glass-panel">
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>WhatsApp</th>
+                        <th>Receiving Account Details</th>
+                        <th>Identity Uploads</th>
+                        <th>Registration Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="adminUsersTableBody">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Running Groups Management -->
+            <div id="pane-admin-groups" class="dashboard-pane">
+              <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">Kameti Group Coordinator</h2>
+              
+              <div class="glass-panel" style="max-width: 500px; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-folder-plus" style="color: var(--primary); margin-right: 0.5rem;"></i> Launch New Kameti Group</h3>
+                <form onsubmit="app.handleCreateGroup(event)">
+                  <div class="form-group">
+                    <label class="form-label">Group Capital Value (Size) <span class="required">*</span></label>
+                    <select id="createGroupAmount" class="form-control" required>
+                      <option value="20000">Rs. 20,000 Group (Monthly: Rs. 2,000)</option>
+                      <option value="50000">Rs. 50,000 Group (Monthly: Rs. 5,000)</option>
+                      <option value="100000">Rs. 100,000 Group (Monthly: Rs. 10,000)</option>
+                      <option value="150000">Rs. 150,000 Group (Monthly: Rs. 15,000)</option>
+                      <option value="200000">Rs. 200,000 Group (Monthly: Rs. 20,000)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Custom Group Name <span class="required">*</span></label>
+                    <input type="text" id="createGroupName" class="form-control" placeholder="Diamond Alpha Pool" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">Create Group</button>
+                </form>
+              </div>
+
+              <div class="glass-panel">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-list-check" style="color: var(--primary); margin-right: 0.5rem;"></i> Current Running Kametis</h3>
+                <div id="adminRunningGroupsContainer">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Payout Control & Urgent Request List -->
+            <div id="pane-admin-payouts" class="dashboard-pane">
+              <h2 style="margin-bottom: 1rem; font-size: 1.8rem;">Disbursement & Urgent Payout Swap Desk</h2>
+              
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-kit-medical" style="color: var(--primary); margin-right: 0.5rem;"></i> Upcoming Urgent Payout Requests (Next Month)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Approving these will swap the payout months in the kameti schedule. Member agreement details will update automatically.</p>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Requester</th>
+                        <th>Kameti Group</th>
+                        <th>Original Draw Month</th>
+                        <th>Reason for Urgency</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="adminUrgentRequestsTable">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="glass-panel">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary); margin-right: 0.5rem;"></i> Historical Payout Ledger</h3>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date Paid Out</th>
+                        <th>Winner Name</th>
+                        <th>Kameti Group</th>
+                        <th>Month Cycle</th>
+                        <th>Disbursed Amount</th>
+                        <th>Logged TxID</th>
+                      </tr>
+                    </thead>
+                    <tbody id="adminPayoutHistoryTable">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Support Desk (Multi-user chat dashboard) -->
+            <div id="pane-admin-support" class="dashboard-pane">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">Customer Support Center</h2>
+              
+              <div class="admin-chat-grid">
+                <!-- User Threads sidebar -->
+                <div class="admin-chat-list" id="adminChatThreadsList">
+                  <!-- Populated via JS -->
+                </div>
+                
+                <!-- Main Chat view -->
+                <div class="chat-container" id="adminChatMainBox" style="display: none;">
+                  <div class="chat-header">
+                    <div class="chat-header-user">
+                      <div class="chat-avatar" id="adminChatAvatar">U</div>
+                      <div>
+                        <h4 id="adminChatHeaderName">Member Name</h4>
+                        <p id="adminChatHeaderEmail" style="color: var(--text-muted); font-size: 0.75rem;">member@gmail.com</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chat-body" id="adminChatBody">
+                    <!-- Messages populated via JS -->
+                  </div>
+                  <form class="chat-footer" onsubmit="app.sendAdminMessage(event)">
+                    <input type="text" id="adminChatInput" class="chat-input" placeholder="Type reply here..." required>
+                    <button type="submit" class="btn btn-primary" style="border-radius: 12px; width: 50px; height: 46px; padding: 0;"><i class="fa-solid fa-paper-plane"></i></button>
+                  </form>
+                </div>
+
+                <div class="glass-panel" id="adminChatSelectHint" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%;">
+                  <i class="fa-solid fa-comments" style="font-size: 3rem; color: var(--card-border); margin-bottom: 1rem;"></i>
+                  <h4>Select a conversation thread</h4>
+                  <p style="color: var(--text-muted);">Choose a user on the left to review messages and send replies.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin AI Email Generator & Settings -->
+            <div id="pane-admin-emails" class="dashboard-pane">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">Gemini & Groq AI Email Generator</h2>
+              
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-key" style="color: var(--primary); margin-right: 0.5rem;"></i> Configure API Keys</h3>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Gemini API Key</label>
+                    <input type="password" id="keyGemini" class="form-control" placeholder="AIzaSy..." onchange="app.saveApiKeys()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Groq API Key</label>
+                    <input type="password" id="keyGroq" class="form-control" placeholder="gsk_..." onchange="app.saveApiKeys()">
+                  </div>
+                </div>
+                <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.5rem;">
+                  Keys are saved locally in your browser's <code>localStorage</code>. If no keys are provided, the app generates custom notifications using detailed local rule templates.
+                </span>
+              </div>
+
+              <div class="ai-panel-grid">
+                <!-- Inputs form -->
+                <div class="glass-panel">
+                  <h3 style="margin-bottom: 1.25rem;"><i class="fa-solid fa-gears" style="color: var(--primary); margin-right: 0.5rem;"></i> Email Parameters</h3>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Select Recipient User <span class="required">*</span></label>
+                    <select id="aiUserSelect" class="form-control" required>
+                      <!-- Populated via JS -->
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Email Purpose / Trigger <span class="required">*</span></label>
+                    <select id="aiEmailTemplate" class="form-control" required>
+                      <option value="welcome">Welcome Onboarding Email</option>
+                      <option value="late_followup">Late Payment Follow-up Notice</option>
+                      <option value="payment_received">Payment Received Receipt</option>
+                      <option value="payout_success">Kameti Payout Disbursed Success</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Select AI Model <span class="required">*</span></label>
+                    <select id="aiModelProvider" class="form-control" required>
+                      <option value="local">Local Template Generator (Default)</option>
+                      <option value="gemini">Gemini API (generativelanguage)</option>
+                      <option value="groq">Groq API (llama3-70b-8192)</option>
+                    </select>
+                  </div>
+
+                  <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem; padding: 0.8rem;" onclick="app.generateAIEmail()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Email Text</button>
+                </div>
+
+                <!-- Preview container -->
+                <div class="ai-preview-box">
+                  <div class="ai-preview-header">
+                    <h4>Generated Email Content</h4>
+                    <button class="btn btn-ghost btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="app.copyAIEmailText()"><i class="fa-solid fa-copy"></i> Copy Text</button>
+                  </div>
+                  <div class="ai-preview-body" id="aiPreviewOutput">Select a user, trigger template, and click "Generate AI Email Text" to preview customized follow-up letters here...</div>
+                  <div class="ai-preview-footer">
+                    <span style="font-size: 0.75rem; color: #94a3b8; align-self: center;">Ready to send via integrated WhatsApp/SMTP simulator</span>
+                    <button class="btn btn-primary" onclick="app.simulateEmailSend()"><i class="fa-solid fa-paper-plane"></i> Send Notification</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: rgba(255, 255, 255, 0.7); text-align: center; padding: 1.5rem; border-top: 1.5px solid var(--card-border); font-size: 0.85rem; color: var(--text-muted);">
+      <div>&copy; 2026 Kameti Club Co. &bull; Secure Rotating Credit Association Manager. All Rights Reserved.</div>
+      <div style="margin-top: 0.5rem; display: flex; justify-content: center; gap: 1.5rem;">
+        <a href="javascript:void(0)" onclick="app.openModal('modal-terms')" style="color: var(--primary); text-decoration: none;">Terms of Service</a>
+        <a href="javascript:void(0)" onclick="app.openModal('modal-privacy')" style="color: var(--primary); text-decoration: none;">Privacy Policy</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- CUSTOM NOTIFICATION TOAST -->
+  <div class="toast" id="toastBox">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage">Success Message here</span>
+  </div>
+
+  <!-- CNIC IMAGE VIEWER MODAL (ADMIN ONLY) -->
+  <div class="modal-backdrop" id="modal-cnic-viewer">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="cnicViewerTitle">CNIC Biometrics</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-cnic-viewer')">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 1.5rem;">
+        <h4>CNIC Front Preview</h4>
+        <img id="modalCnicFrontImg" src="" style="width: 100%; max-height: 220px; object-fit: contain; margin-bottom: 1.5rem; border-radius: 8px; border: 1.5px dashed var(--primary);">
+        
+        <h4>CNIC Back Preview</h4>
+        <img id="modalCnicBackImg" src="" style="width: 100%; max-height: 220px; object-fit: contain; border-radius: 8px; border: 1.5px dashed var(--primary);">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="app.closeModal('modal-cnic-viewer')">Close Viewer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAY MODAL RECEIPT VIEWER (ADMIN ONLY) -->
+  <div class="modal-backdrop" id="modal-receipt-viewer">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>Transfer Receipt Verification</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-receipt-viewer')">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Compare this receipt against your actual bank/wallet statements before confirming.</p>
+        <img id="modalReceiptImg" src="" style="width: 100%; max-height: 350px; object-fit: contain; border-radius: 8px; border: 1.5px solid var(--card-border);">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="app.closeModal('modal-receipt-viewer')">Cancel</button>
+        <button class="btn btn-primary" onclick="app.approveSelectedPayment()">Approve Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS AND CONDITIONS MODAL -->
+  <div class="modal-backdrop" id="modal-terms">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Terms & Conditions</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-terms')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Last Updated: July 29, 2026</strong></p>
+        <p>Welcome to Kameti Club. Please read these Terms and Conditions ("T&C") carefully before registering. By checking the agreement checkbox during sign-up, you legally bind yourself to these terms under the Electronic Transactions Ordinance (ETO), 2002 of Pakistan.</p>
+        
+        <h4>1. Nature of Business (Kameti Savings)</h4>
+        <p>Kameti Club operates strictly as a digital ledger, verification coordinator, and communications platform for Rotating Savings (commonly known as "Kameti" or "Kameti" in Pakistan). By joining a group, you agree to form a 10-member peer savings circle rotating over 10 consecutive months.</p>
+
+        <h4>2. Financial Commitments & Fees</h4>
+        <ul>
+          <li><strong>Base Deposit:</strong> Each member must pay their group's base kameti amount (ranging from Rs. 5,000 to Rs. 20,000 depending on group capital) on a monthly basis.</li>
+          <li><strong>Admin Service Fee:</strong> Each member must pay a flat <strong>Rs. 100 per month</strong> in addition to the base deposit. This fee is used for platform operations, identity verification, SMS notifications, and support overhead.</li>
+          <li><strong>Payout Rotation:</strong> Every member is entitled to receive the total pooled kameti funds (excluding admin fees) exactly **one time** during the 10-month cycle.</li>
+        </ul>
+
+        <h4>3. Deadline, Late Fee Penalties & Law Actions</h4>
+        <ul>
+          <li><strong>Due Date:</strong> Payments must be verified and logged in the app on or before the <strong>10th date of each calendar month</strong>.</li>
+          <li><strong>Late Fee Penalty:</strong> Any member who fails to make payments before the 10th of the month will be charged a strict overcharge penalty of <strong>Rs. 500 per day</strong> for each day the payment is delayed.</li>
+          <li><strong>Defaulter & Legal Recovery Consent:</strong> By agreeing to these terms, you grant explicit consent that in the event of failure to pay within 30 days of the due date, the administrator and members of the group have the right to register a criminal complaint (under sections 406/420 PPC for criminal breach of trust and fraud) and seek recovery through summary court procedures. Your uploaded CNIC Front & Back biometrics and address details will be submitted to the Federal Investigation Agency (FIA) and local law enforcement for prosecution.</li>
+        </ul>
+
+        <h4>4. Urgent Payout Swap Rules</h4>
+        <p>Members can submit request forms for urgent next-month payouts. These requests will only be approved if the member scheduled for the next month agrees to swap cycles, and if the admin approves the exchange based on membership performance history.</p>
+
+        <h4>5. Peer-to-Peer Transactions Disclaimer</h4>
+        <p>Kameti Club itself does not hold or store digital money or wallet balances on its servers. All payments are manually transferred directly to the designated Admin banking coordinates and audited via the system ledgers. The operator is not responsible for external bank downtime or transfer failures.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="app.closeModal('modal-terms')">I Understand</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY POLICY MODAL -->
+  <div class="modal-backdrop" id="modal-privacy">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Privacy Policy</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-privacy')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Last Updated: July 29, 2026</strong></p>
+        <p>At Kameti Club, we take user privacy and identity security very seriously. This policy describes how we collect, store, and utilize your information under the digital privacy guidelines of Pakistan.</p>
+
+        <h4>1. Information We Collect</h4>
+        <p>To participate in our secure kametis, users must provide:</p>
+        <ul>
+          <li>Full Name, Registered Email Address, and Active WhatsApp Number.</li>
+          <li>High-definition photographs of your <strong>CNIC Front and Back sides</strong> for identity verification and anti-fraud auditing.</li>
+          <li>Account Details: EasyPaisa, JazzCash, NayaPay, SadaPay, or Bank account numbers and Account Title for payout processing.</li>
+        </ul>
+
+        <h4>2. Data Security & Storage</h4>
+        <p>Your uploaded CNIC images, contact details, and account keys are converted into encrypted data URLs and stored securely. We do not sell or share your biometrics or credentials with any commercial third-party marketing networks.</p>
+
+        <h4>3. Law Enforcement Disclosures</h4>
+        <p>We are legally required to disclose CNIC documents, registered emails, IP logs, and payment details to the Government of Pakistan, Securities and Exchange Commission of Pakistan (SECP), State Bank of Pakistan (SBP), or the Federal Investigation Agency (FIA) only when requested during investigations of default, financial fraud, money laundering, or illegal asset tracking.</p>
+
+        <h4>4. User Rights</h4>
+        <p>You have the right to request deletion of your account once all your joined kameti cycles are completed and all financial liabilities have been fully paid. Active kameti participants cannot request profile deletion during a running cycle.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="app.closeModal('modal-privacy')">Close Policy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
+
+
