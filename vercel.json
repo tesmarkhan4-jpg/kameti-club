@@ -2,17 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "*.{html,css,js,png,ico,svg,woff,woff2,ttf,eot}",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server.js"
+      "dest": "/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/(styles\\.css|app\\.js|logo\\.png|favicon\\.ico)(.*)",
+      "dest": "/$1$2"
     },
     {
       "src": "/(.*)",
