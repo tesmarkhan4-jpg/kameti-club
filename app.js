@@ -121,6 +121,7 @@ class KametiApp {
     this.transactions = JSON.parse(localStorage.getItem('Kameti_transactions') || '[]');
     this.chats = JSON.parse(localStorage.getItem('Kameti_chats') || '{}');
     this.urgentRequests = JSON.parse(localStorage.getItem('Kameti_urgent') || '[]');
+    this.reminderLogs = JSON.parse(localStorage.getItem('Kameti_reminder_logs') || '{}');
   }
 
   saveData() {
@@ -129,6 +130,7 @@ class KametiApp {
     localStorage.setItem('Kameti_transactions', JSON.stringify(this.transactions));
     localStorage.setItem('Kameti_chats', JSON.stringify(this.chats));
     localStorage.setItem('Kameti_urgent', JSON.stringify(this.urgentRequests));
+    localStorage.setItem('Kameti_reminder_logs', JSON.stringify(this.reminderLogs));
   }
 
   getGroupMonthName(group, monthIdx) {
@@ -2346,6 +2348,61 @@ ${senderTitle}`;
     });
   }
 
+  generateAndSendAIReminder(user, group, cycleMonthName) {
+    const prompt = `You are the Kameti Club Assistant (Pakistan P2P savings platform coordinator).
+    Generate a polite, clear, and professional daily payment reminder email in English (incorporating natural, polite Roman Urdu phrases where appropriate) addressed to:
+    - Member Name: ${user.name}
+    - Group Name: ${group.name}
+    - Base Monthly Payment: Rs. ${group.monthlyPayment.toLocaleString()}
+    - Cycle Month: ${cycleMonthName}
+    - Due Date: Before the 10th of this month.
+    
+    Please remind them to log in to the portal and submit their manual payment proof to avoid auto-suspension (which triggers on the 10th at 10:00 AM PKT with a Rs. 500/day overcharge penalty).
+    Keep it friendly but clear. Do NOT include markdown headings, just return the plain email text containing Subject and Body.`;
+
+    // Fetch AI response via backend proxy
+    fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt })
+    })
+    .then(res => res.json())
+    .then(data => {
+      let emailBodyText = '';
+      if (data.text) {
+        emailBodyText = data.text;
+        console.log("Daily payment reminder generated via Gemini API.");
+      } else {
+        throw new Error("No Gemini response");
+      }
+      this.sendRealEmail(user.email, `Payment Reminder: ${group.name}`, emailBodyText);
+    })
+    .catch(err => {
+      console.warn("Gemini API failed for reminder email, falling back to Groq:", err);
+      fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      })
+      .then(res => res.json())
+      .then(data => {
+        let emailBodyText = '';
+        if (data.text) {
+          emailBodyText = data.text;
+          console.log("Daily payment reminder generated via Groq API.");
+        } else {
+          throw new Error("No Groq response");
+        }
+        this.sendRealEmail(user.email, `Payment Reminder: ${group.name}`, emailBodyText);
+      })
+      .catch(err2 => {
+        console.error("All AI API endpoints failed for reminder, using local template fallback:", err2);
+        const bodyText = `Dear ${user.name},<br><br>This is a daily reminder that your monthly payment of <strong>Rs. ${group.monthlyPayment.toLocaleString()}</strong> for group <strong>${group.name}</strong> (${cycleMonthName}) is pending.<br><br>Please log in to the Kameti Club portal and submit your transaction receipt before the 10th of the month to keep your account active and avoid any penalties.<br><br>Best regards,<br>Kameti Club Team`;
+        this.sendRealEmail(user.email, `Payment Reminder: ${group.name}`, bodyText);
+      });
+    });
+  }
+
   // --- Modals ---
   openModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -2474,6 +2531,42 @@ ${senderTitle}`;
                 const subject = `Kameti Club Account Suspended - ${g.name}`;
                 const bodyText = `Dear Saver,<br><br>Your Kameti Club account has been automatically suspended due to non-payment of dues for <strong>${g.name}</strong> (Month Cycle: ${currentCycleMonthName}).<br><br>Please contact the support desk or clear your outstanding payments to restore access.<br><br>Best regards,<br>Kameti Club Team`;
                 this.sendRealEmail(memberEmail, subject, bodyText);
+              }
+            }
+          });
+        }
+      });
+    }
+
+    // Trigger 3: Daily Auto-Reminder to unpaid members (runs before the 10th of the month)
+    if (day < 10) {
+      const dateKey = now.toISOString().split('T')[0];
+      this.groups.forEach(g => {
+        if (g.status === 'running') {
+          const currentCycleMonthName = `Month ${g.cycleMonth}`;
+          
+          g.members.forEach(memberEmail => {
+            // Check if they already paid
+            const hasPaid = this.transactions.some(t => 
+              t.userEmail === memberEmail && 
+              t.groupId === g.id && 
+              t.cycleMonthName === currentCycleMonthName && 
+              t.status === 'approved'
+            );
+            
+            if (!hasPaid) {
+              // Check if reminder was already sent for today
+              const logKey = `${g.id}-${g.cycleMonth}-${memberEmail}-${dateKey}`;
+              if (!this.reminderLogs) this.reminderLogs = {};
+              
+              if (!this.reminderLogs[logKey]) {
+                this.reminderLogs[logKey] = true;
+                stateChanged = true;
+                
+                const userObj = this.users.find(u => u.email === memberEmail);
+                if (userObj) {
+                  this.generateAndSendAIReminder(userObj, g, currentCycleMonthName);
+                }
               }
             }
           });
