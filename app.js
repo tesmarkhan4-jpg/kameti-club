@@ -90,50 +90,12 @@ class KametiApp {
   }
 
   logVisitorVisit() {
-    let device = 'Desktop';
-    const ua = navigator.userAgent;
-    if (/tablet|ipad|playbook|silk/i.test(ua)) {
-      device = 'Tablet';
-    } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Opera Mini/i.test(ua)) {
-      device = 'Mobile';
-    }
-
-    // Try Geo IP lookup
-    fetch('https://ipapi.co/json/')
-    .then(res => res.json())
-    .then(data => {
-      const visitData = {
-        ip: data.ip || 'Unknown',
-        country: data.country_name || 'Pakistan',
-        city: data.city || 'Karachi',
-        device: device,
-        os: navigator.platform || 'Unknown OS',
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      };
-      
-      fetch('/api/log-visit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(visitData)
-      });
+    fetch('/api/log-visit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
     })
     .catch(err => {
-      console.warn("GeoIP lookup failed, logging default Pakistan/Karachi metadata:", err);
-      const visitData = {
-        ip: '192.168.1.101',
-        country: 'Pakistan',
-        city: 'Karachi',
-        device: device,
-        os: navigator.platform || 'Unknown OS',
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      };
-      fetch('/api/log-visit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(visitData)
-      });
+      console.error("Failed to post visitor log details:", err);
     });
   }
 
