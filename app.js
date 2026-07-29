@@ -2170,14 +2170,165 @@ ${senderTitle}`;
     this.showToast(`Simulating Email & WhatsApp delivery to ${userEmail}... Sent!`, 'success');
   }
 
+  wrapInPremiumTemplate(subject, bodyText) {
+    let formattedBody = bodyText;
+    if (bodyText.includes('verification OTP code is:')) {
+      const match = bodyText.match(/verification OTP code is:\s*<strong>(\d+)<\/strong>/i);
+      if (match) {
+        const otpCode = match[1];
+        formattedBody = bodyText.replace(/verification OTP code is:\s*<strong>(\d+)<\/strong>/i, `
+          <div class="highlight-box">
+            <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: #64748b; text-align: center; margin-bottom: 5px; letter-spacing: 0.5px;">Your Verification OTP Code</div>
+            <div class="otp-code">${otpCode}</div>
+          </div>
+        `);
+      }
+    } else if (bodyText.includes('automatically suspended')) {
+      formattedBody = bodyText.replace(/(Please contact the support desk or clear your outstanding payments to restore access\.)/i, `
+        <div class="highlight-box" style="border-left-color: #ef4444; background-color: rgba(239, 68, 68, 0.05); color: #b91c1c;">
+          <strong>⚠️ Action Required:</strong><br>
+          Please contact the support desk or clear your outstanding payments to restore access.
+        </div>
+      `);
+    } else if (bodyText.includes('auto-disbursed')) {
+      const amountMatch = bodyText.match(/Rs\.\s*([\d,]+)/);
+      const txMatch = bodyText.match(/Transaction ID:\s*<strong>(\w+)<\/strong>/i);
+      let highlights = '';
+      if (amountMatch) highlights += `<strong>💰 Disbursed Amount:</strong> Rs. ${amountMatch[1]}<br>`;
+      if (txMatch) highlights += `<strong>🔗 Transaction ID:</strong> ${txMatch[1]}<br>`;
+      
+      if (highlights) {
+        formattedBody = bodyText.replace(/(We are pleased to inform you that your monthly pool payout[\s\S]*?successfully auto-disbursed to your registered account\.)/i, `$1<div class="highlight-box">${highlights}</div>`);
+      }
+    }
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .email-wrapper {
+      width: 100%;
+      background-color: #f8fafc;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+    .email-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid rgba(16, 185, 129, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.04), 0 4px 6px -2px rgba(16, 185, 129, 0.02);
+    }
+    .email-header {
+      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      padding: 30px;
+      text-align: center;
+    }
+    .email-header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .email-body {
+      padding: 40px 30px;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    .email-body p {
+      margin: 0 0 20px 0;
+      color: #475569;
+    }
+    .email-body p:last-child {
+      margin-bottom: 0;
+    }
+    .highlight-box {
+      background-color: rgba(16, 185, 129, 0.05);
+      border-left: 4px solid #10b981;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 25px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .otp-code {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: #10b981;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .email-footer {
+      background-color: #f1f5f9;
+      padding: 20px 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+    }
+    .email-footer a {
+      color: #10b981;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    @media only screen and (max-width: 600px) {
+      .email-wrapper {
+        padding: 20px 10px;
+      }
+      .email-body {
+        padding: 30px 20px;
+      }
+      .email-header {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="email-card">
+      <div class="email-header">
+        <h1>Kameti Club</h1>
+      </div>
+      <div class="email-body">
+        ${formattedBody}
+      </div>
+      <div class="email-footer">
+        &copy; 2026 Kameti Club. All Rights Reserved.<br>
+        Pakistan's Premium P2P Committee Coordinator. <a href="https://kameti-club.vercel.app">Access Portal</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+  }
+
   sendRealEmail(toEmail, subject, body) {
+    const htmlBody = this.wrapInPremiumTemplate(subject, body);
+    
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         to: toEmail,
         subject: subject,
-        body: body
+        body: htmlBody
       })
     })
     .then(response => response.json())
