@@ -282,6 +282,65 @@
             
             <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: center; font-size: 0.9rem;">
               <a href="javascript:void(0)" onclick="app.navigateTo('register')" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create a new account</a>
+              <a href="javascript:void(0)" onclick="app.navigateTo('forgot-password')" style="color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500; margin-top: 0.25rem;">Forgot password?</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Forgot Password View -->
+      <section id="view-forgot-password" class="view-section">
+        <div class="auth-wrapper glass-panel animate-scale-in" style="max-width: 420px; margin: 4rem auto;">
+          <div class="auth-header">
+            <h2>Reset Password</h2>
+            <p>Enter your registered email to receive a verification OTP code.</p>
+          </div>
+          <form onsubmit="app.handleForgotPassword(event)">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label class="form-label">Registered Email</label>
+              <input type="email" id="forgotEmail" class="form-control" placeholder="yourname@gmail.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem;">Send Reset Code</button>
+            <div style="text-align: center; font-size: 0.9rem;">
+              <a href="javascript:void(0)" onclick="app.navigateTo('login')" style="color: var(--primary); text-decoration: none; font-weight: 600;">Back to Login</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Reset Password View -->
+      <section id="view-reset-password" class="view-section">
+        <div class="auth-wrapper glass-panel animate-scale-in" style="max-width: 420px; margin: 4rem auto;">
+          <div class="auth-header">
+            <h2>Verify Reset Code</h2>
+            <p>Enter the 6-digit OTP code sent to <strong id="resetEmailLabel" style="color: var(--primary);">yourname@gmail.com</strong> and choose a new password.</p>
+          </div>
+          <form onsubmit="app.handleResetPasswordSubmit(event)">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Verification OTP Code</label>
+              <div class="otp-box-container" style="display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" id="resetOtp1" class="form-control otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'resetOtp2')" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+                <input type="text" id="resetOtp2" class="form-control otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'resetOtp3')" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+                <input type="text" id="resetOtp3" class="form-control otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'resetOtp4')" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+                <input type="text" id="resetOtp4" class="form-control otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'resetOtp5')" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+                <input type="text" id="resetOtp5" class="form-control otp-input" maxlength="1" onkeyup="app.moveOtpFocus(this, 'resetOtp6')" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+                <input type="text" id="resetOtp6" class="form-control otp-input" maxlength="1" style="width: 42px; height: 48px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 8px;" required>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">New Password</label>
+              <input type="password" id="resetNewPassword" class="form-control" placeholder="Min. 8 characters" required>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" id="resetConfirmPassword" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem;">Reset Password</button>
+            <div style="text-align: center; font-size: 0.9rem;">
+              <a href="javascript:void(0)" onclick="app.navigateTo('login')" style="color: var(--primary); text-decoration: none; font-weight: 600;">Back to Login</a>
             </div>
           </form>
         </div>
@@ -544,6 +603,7 @@
             <a class="sidebar-link" onclick="app.switchAdminPane('admin-payouts', this)"><i class="fa-solid fa-hand-holding-dollar"></i> Payout Control</a>
             <a class="sidebar-link" onclick="app.switchAdminPane('admin-support', this)"><i class="fa-solid fa-comments"></i> Support Desk</a>
             <a class="sidebar-link" onclick="app.switchAdminPane('admin-emails', this)"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Email Gen</a>
+            <a class="sidebar-link" onclick="app.switchAdminPane('admin-analytics', this)"><i class="fa-solid fa-chart-pie"></i> Detailed Analytics</a>
             <a class="sidebar-link" onclick="app.handleLogout()" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
           </aside>
 
@@ -843,6 +903,84 @@
                     <span style="font-size: 0.75rem; color: #94a3b8; align-self: center;">Ready to send via integrated WhatsApp/SMTP simulator</span>
                     <button class="btn btn-primary" onclick="app.simulateEmailSend()"><i class="fa-solid fa-paper-plane"></i> Send Notification</button>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Detailed Analytics Pane -->
+            <div id="pane-admin-analytics" class="dashboard-pane">
+              <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">System Liquidity & Detailed Analytics</h2>
+              
+              <div class="stats-row" style="margin-bottom: 2rem;">
+                <div class="stats-card">
+                  <span class="title">Total Capital Deposits</span>
+                  <span class="value" id="analyticsTotalSavings">Rs. 0</span>
+                  <span class="desc">Active circulating capital</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Service Fee Revenue</span>
+                  <span class="value" id="analyticsServiceFees">Rs. 0</span>
+                  <span class="desc">Rs. 100/saver monthly service fee</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Default Penalty Profit</span>
+                  <span class="value" id="analyticsPenalties">Rs. 0</span>
+                  <span class="desc">Rs. 500/day late penalties collected</span>
+                </div>
+              </div>
+
+              <div class="stats-row" style="margin-bottom: 2rem;">
+                <div class="stats-card">
+                  <span class="title">Active Savers Registry</span>
+                  <span class="value" id="analyticsActiveSavers">0 Members</span>
+                  <span class="desc">Total registered peer participants</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Late Defaulting Rate</span>
+                  <span class="value" id="analyticsDefaultRate">0%</span>
+                  <span class="desc">Risk percentage based on defaults</span>
+                </div>
+                <div class="stats-card">
+                  <span class="title">Collection Performance</span>
+                  <span class="value" id="analyticsCollectionRate">0%</span>
+                  <span class="desc">Percentage of approved payments</span>
+                </div>
+              </div>
+
+              <!-- AI Audit Section -->
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                  <div>
+                    <h3 style="margin: 0;"><i class="fa-solid fa-brain" style="color: var(--primary); margin-right: 0.5rem;"></i> AI Risk, Compliance & Liquidity Audit</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Perform an autonomous system-wide audit using Gemini/Groq neural engines.</p>
+                  </div>
+                  <button class="btn btn-primary" onclick="app.runAISystemAudit()"><i class="fa-solid fa-sliders"></i> Run AI Audit</button>
+                </div>
+                <div id="aiAuditResult" style="padding: 1.5rem; background: #1e293b; color: #f8fafc; border-radius: 12px; font-family: monospace; font-size: 0.9rem; line-height: 1.6; max-height: 400px; overflow-y: auto;">
+                  Click "Run AI Audit" to initiate real-time inspection of database transactions, late fees, savings pools, default patterns, and regulatory recovery warnings.
+                </div>
+              </div>
+
+              <!-- Defaulted Savers Recovery & Notices Desk -->
+              <div class="glass-panel">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-gavel" style="color: #ef4444; margin-right: 0.5rem;"></i> Default Recovery & Notice Desk</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Send formal legal notices and automated warnings to suspended or delinquent participants.</p>
+                <div class="table-scroll-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Saver Name</th>
+                        <th>Registered Email</th>
+                        <th>Payout Method</th>
+                        <th>WhatsApp ID</th>
+                        <th>Risk Assessment</th>
+                        <th>Action Notice</th>
+                      </tr>
+                    </thead>
+                    <tbody id="analyticsDefaultedSaversList">
+                      <!-- Filled dynamically via app.js -->
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

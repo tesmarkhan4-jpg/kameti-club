@@ -588,6 +588,82 @@ class KametiApp {
     this.navigateTo('home');
   }
 
+  handleForgotPassword(event) {
+    event.preventDefault();
+    const email = document.getElementById('forgotEmail').value.toLowerCase().trim();
+    const matchedUser = this.users.find(u => u.email === email);
+
+    if (!matchedUser) {
+      this.showToast('Error: Email address is not registered!', 'error');
+      return;
+    }
+
+    const resetOtp = String(Math.floor(100000 + Math.random() * 900000));
+    this.resetOtpCode = resetOtp;
+    this.resetTargetEmail = email;
+
+    // Send real email with recovery OTP code
+    const subject = "Kameti Club - Password Reset OTP Code";
+    const bodyText = `Dear ${matchedUser.name},<br><br>We received a request to reset your account password.<br><br>Your verification OTP code is: <strong>${resetOtp}</strong>.<br><br>Please enter this code on the recovery screen to reset your password. If you did not request a password reset, please ignore this email.<br><br>Best regards,<br>Kameti Club Team`;
+    this.sendRealEmail(email, subject, bodyText);
+
+    document.getElementById('resetEmailLabel').innerText = email;
+    this.showToast('Password reset code sent to your email!', 'success');
+    
+    // Clear inputs
+    for (let i = 1; i <= 6; i++) {
+      const el = document.getElementById(`resetOtp${i}`);
+      if (el) el.value = '';
+    }
+    document.getElementById('resetNewPassword').value = '';
+    document.getElementById('resetConfirmPassword').value = '';
+
+    this.navigateTo('reset-password');
+  }
+
+  handleResetPasswordSubmit(event) {
+    event.preventDefault();
+
+    let enteredOtp = '';
+    for (let i = 1; i <= 6; i++) {
+      enteredOtp += document.getElementById(`resetOtp${i}`).value.trim();
+    }
+
+    if (enteredOtp !== this.resetOtpCode) {
+      this.showToast('Error: Invalid reset OTP code! Please try again.', 'error');
+      return;
+    }
+
+    const newPass = document.getElementById('resetNewPassword').value;
+    const confirmPass = document.getElementById('resetConfirmPassword').value;
+
+    if (newPass.length < 8) {
+      this.showToast('Error: Password must be at least 8 characters long.', 'error');
+      return;
+    }
+
+    if (newPass !== confirmPass) {
+      this.showToast('Error: New passwords do not match!', 'error');
+      return;
+    }
+
+    // Find and update password
+    const userIndex = this.users.findIndex(u => u.email === this.resetTargetEmail);
+    if (userIndex !== -1) {
+      this.users[userIndex].password = newPass;
+      this.saveData();
+
+      // Clear temp variables
+      this.resetOtpCode = null;
+      this.resetTargetEmail = null;
+
+      this.showToast('Password reset successfully! Please log in with your new credentials.', 'success');
+      this.navigateTo('login');
+    } else {
+      this.showToast('Error: User not found in system record.', 'error');
+    }
+  }
+
   // --- Pane Switchers ---
   switchUserPane(paneId, element) {
     this.activeUserPane = paneId;
@@ -644,6 +720,8 @@ class KametiApp {
       this.renderAdminSupportDesk();
     } else if (paneId === 'admin-emails') {
       this.renderAdminAIEmails();
+    } else if (paneId === 'admin-analytics') {
+      this.renderAdminAnalytics();
     }
   }
 
@@ -2170,6 +2248,135 @@ ${senderTitle}`;
     if (!userEmail) return;
 
     this.showToast(`Simulating Email & WhatsApp delivery to ${userEmail}... Sent!`, 'success');
+  }
+
+  renderAdminAnalytics() {
+    const totalSavings = this.groups.filter(g => g.status === 'running').reduce((sum, g) => sum + g.amount, 0);
+    const serviceFees = this.transactions.filter(t => t.status === 'approved' && t.serviceFee).reduce((sum, t) => sum + t.serviceFee, 0);
+    const penalties = this.transactions.filter(t => t.status === 'approved' && t.lateFee).reduce((sum, t) => sum + t.lateFee, 0);
+    const activeSavers = this.users.filter(u => u.role !== 'admin').length;
+    const suspendedSavers = this.users.filter(u => u.role !== 'admin' && u.status === 'suspended').length;
+    const defaultRate = activeSavers > 0 ? ((suspendedSavers / activeSavers) * 100).toFixed(1) : '0';
+    
+    let expectedPayments = 0;
+    this.groups.forEach(g => {
+      if (g.status === 'running') {
+        expectedPayments += g.members.length * g.cycleMonth;
+      }
+    });
+    const approvedPayments = this.transactions.filter(t => t.status === 'approved' && t.groupId).length;
+    const collectionRate = expectedPayments > 0 ? ((approvedPayments / expectedPayments) * 100).toFixed(1) : '100';
+
+    document.getElementById('analyticsTotalSavings').innerText = 'Rs. ' + totalSavings.toLocaleString();
+    document.getElementById('analyticsServiceFees').innerText = 'Rs. ' + serviceFees.toLocaleString();
+    document.getElementById('analyticsPenalties').innerText = 'Rs. ' + penalties.toLocaleString();
+    document.getElementById('analyticsActiveSavers').innerText = activeSavers + ' Members';
+    document.getElementById('analyticsDefaultRate').innerText = defaultRate + '%';
+    document.getElementById('analyticsCollectionRate').innerText = Math.min(100, parseFloat(collectionRate)).toFixed(1) + '%';
+
+    // Populate defaulted savers table
+    const tableBody = document.getElementById('analyticsDefaultedSaversList');
+    if (tableBody) {
+      tableBody.innerHTML = '';
+      const defaultedUsers = this.users.filter(u => u.status === 'suspended' && u.role !== 'admin');
+      
+      if (defaultedUsers.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No defaulted savers in system record. All accounts are compliant!</td></tr>`;
+      } else {
+        defaultedUsers.forEach(u => {
+          const userGroups = this.groups.filter(g => g.members.includes(u.email) && g.status === 'running');
+          const groupNames = userGroups.map(g => g.name).join(', ') || 'N/A';
+          tableBody.innerHTML += `
+            <tr>
+              <td><strong>${u.name}</strong></td>
+              <td>${u.email}</td>
+              <td>${u.payoutMethod}</td>
+              <td>${u.whatsapp || 'N/A'}</td>
+              <td><span class="badge badge-danger">High Default Risk</span></td>
+              <td>
+                <button class="btn btn-secondary btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" onclick="app.sendDefaultRecoveryNotice('${u.email}', '${groupNames}')"><i class="fa-solid fa-paper-plane"></i> Send Recovery Notice</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+    }
+  }
+
+  sendDefaultRecoveryNotice(memberEmail, groupName) {
+    const user = this.users.find(u => u.email === memberEmail);
+    if (!user) return;
+
+    const subject = `URGENT LEGAL NOTICE: Kameti Club Liability Collection`;
+    const bodyText = `Dear ${user.name},<br><br>This is an official notice regarding persistent default on your monthly savings contribution for group: <strong>${groupName}</strong>.<br><br>As a registered member, you are obligated under the signed peer saver agreement. Continued failure to clear your dues and accumulated late penalties (Rs. 500 per day past the 10th) will result in the permanent suspension of your profile and escalation to recovery measures using your biometric CNIC verification records.<br><br>Please log in immediately to clear your liabilities and restore access.<br><br>Best regards,<br>Kameti Recovery & Compliance Desk`;
+    this.sendRealEmail(memberEmail, subject, bodyText);
+    this.showToast(`Legal recovery notice dispatched to ${memberEmail}!`, 'success');
+  }
+
+  runAISystemAudit() {
+    const resultBox = document.getElementById('aiAuditResult');
+    if (!resultBox) return;
+
+    resultBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 0.5rem;"></i> Running system-wide liquidity and default risk audit... Please wait...';
+
+    const totalSavings = this.groups.filter(g => g.status === 'running').reduce((sum, g) => sum + g.amount, 0);
+    const serviceFees = this.transactions.filter(t => t.status === 'approved' && t.serviceFee).reduce((sum, t) => sum + t.serviceFee, 0);
+    const penalties = this.transactions.filter(t => t.status === 'approved' && t.lateFee).reduce((sum, t) => sum + t.lateFee, 0);
+    const activeSavers = this.users.filter(u => u.role !== 'admin').length;
+    const suspendedSavers = this.users.filter(u => u.role !== 'admin' && u.status === 'suspended').length;
+    const riskRate = activeSavers > 0 ? ((suspendedSavers / activeSavers) * 100).toFixed(1) : '0';
+
+    const prompt = `You are a professional financial compliance auditor. Analyze the following ROSCA (Rotating Savings & Credit Association) tracker state:
+    - Circulating Savings Capital: Rs. ${totalSavings.toLocaleString()}
+    - System Service Fees Collected: Rs. ${serviceFees.toLocaleString()}
+    - Default Penalties Assessed: Rs. ${penalties.toLocaleString()}
+    - Total Active Savers: ${activeSavers}
+    - Total Delinquent/Suspended Savers: ${suspendedSavers}
+    
+    Please write a complete, realistic system audit report covering:
+    1. Financial Liquidity and Payout Solvency
+    2. Credit/Default Risk Analysis (Risk Percentage: ${riskRate}%)
+    3. Strict recommendations to recover delinquent funds and minimize defaulting members.
+    
+    Output standard clean text with simple markdown table or bullet formatting. Do NOT use markdown code blocks or html wrappers. Make it read like a premium corporate financial document.`;
+
+    fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.text) {
+        resultBox.innerText = data.text;
+        this.showToast('System audit report generated via Gemini!', 'success');
+      } else {
+        throw new Error("Empty response");
+      }
+    })
+    .catch(err => {
+      console.warn("Gemini audit query failed, trying Groq proxy:", err);
+      fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.text) {
+          resultBox.innerText = data.text;
+          this.showToast('System audit report generated via Groq!', 'success');
+        } else {
+          throw new Error("Empty response");
+        }
+      })
+      .catch(err2 => {
+        console.error("All AI proxies failed for audit:", err2);
+        // Fallback local report
+        resultBox.innerHTML = `<strong>ROSCA SYSTEM AUDIT SUMMARY (LOCAL GENERATION)</strong>\n=========================================\n\n1. LIQUIDITY & SOLVENCY ASSESSMENT\nCirculating capital remains stable at Rs. ${totalSavings.toLocaleString()}. Capital payout reserves are fully funded by peer-saver pool obligations. Solvency risk is low.\n\n2. DEFAULT RISK EVALUATION\nSystem default rate stands at ${riskRate}%. Delinquent savers represent outstanding liabilities which impact other saver slots in the cycle. Account suspension policies are active.\n\n3. ACTIONABLE COMPLIANCE RECOMMENDATIONS\n- Deploy daily AI-generated email reminders to active unpaid accounts before the 10th.\n- Dispatch recovery warnings to suspended accounts using the legal recovered notice desk.`;
+        this.showToast('AI offline: Local audit summary report generated.', 'info');
+      });
+    });
   }
 
   wrapInPremiumTemplate(subject, bodyText) {
