@@ -2186,10 +2186,12 @@ ${senderTitle}`;
         console.log(`Real email sent to ${toEmail} successfully via Secure Node.js Backend.`);
       } else {
         console.error("Secure Node.js Backend failed to send email:", data.error);
+        this.showToast(`Email Delivery Error: ${data.error || 'Check server logs'}`, 'error');
       }
     })
     .catch(err => {
       console.error("Error calling secure send-email API:", err);
+      this.showToast('Network error: Failed to connect to secure email dispatcher.', 'error');
     });
   }
 
