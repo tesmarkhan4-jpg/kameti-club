@@ -320,6 +320,7 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-top: 4rem;
+  width: 100%;
 }
 
 .feature-card {
@@ -1360,15 +1361,15 @@ tr:last-child td {
     flex: 1 1 45%;
   }
 
-  /* Group cards grid */
-  .groups-grid {
-    grid-template-columns: 1fr 1fr;
+  /* Group cards grid: 2 columns on tablet */
+  .group-grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 
-  /* Features section */
-  .features-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+  /* Features: 1 column on tablet already collapses nicely */
+  .hero-features {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem;
   }
 }
 
@@ -1435,23 +1436,20 @@ tr:last-child td {
     font-size: 0.9rem;
   }
 
-  /* Features */
-  .features-section {
-    padding: 2.5rem 1rem;
-  }
-  .features-grid {
-    grid-template-columns: 1fr;
+  /* Features section */
+  .hero-features {
+    grid-template-columns: 1fr !important;
     gap: 1rem;
   }
   .feature-card {
     padding: 1.25rem;
   }
 
-  /* Groups grid */
-  .groups-grid {
-    grid-template-columns: 1fr;
+  /* Groups / public kametis grid */
+  .group-grid {
+    grid-template-columns: 1fr !important;
   }
-  .groups-section {
+  .public-kametis-section {
     padding: 2rem 1rem;
   }
 
@@ -1734,5 +1732,103 @@ tr:last-child td {
   }
   .btn-primary {
     padding: 0.65rem 1.25rem;
+  }
+}
+
+/* =========================================
+   CRITICAL MOBILE PATCHES
+   ========================================= */
+
+/* Dashboard: convert sidebar to horizontal scrollable tab bar on mobile */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .dashboard-sidebar {
+    flex-direction: row !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem !important;
+    border-radius: 12px !important;
+    gap: 0.25rem !important;
+    height: auto !important;
+    min-height: unset !important;
+    margin-bottom: 1rem;
+    border-bottom: none;
+    flex-wrap: nowrap;
+  }
+
+  .sidebar-profile {
+    display: none !important;
+  }
+
+  .sidebar-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.78rem !important;
+    border-radius: 8px !important;
+    border-left: none !important;
+    gap: 0.4rem !important;
+  }
+
+  .sidebar-link.active {
+    border-left: none !important;
+    border-bottom: 3px solid var(--primary) !important;
+  }
+
+  /* Section container padding */
+  .section-container,
+  .hero-section > div,
+  .view-section > div {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Payment grid — wrap into scroll container */
+  .payment-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Admin chat: stack vertically + limit height */
+  .admin-chat-grid {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+  }
+  .admin-chat-list {
+    height: 180px !important;
+    min-height: unset;
+  }
+  .chat-container {
+    height: 380px !important;
+  }
+
+  /* Public groups heading font */
+  .public-kametis-section h2 {
+    font-size: 1.6rem !important;
+  }
+  .public-kametis-section p {
+    font-size: 0.88rem !important;
+  }
+}
+
+/* Hero section has a container div with max-width — make it full width on mobile */
+@media (max-width: 768px) {
+  .hero-container {
+    padding: 0 0.5rem;
+  }
+
+  /* Ensure view-sections don't overflow */
+  .view-section {
+    padding: 1rem;
+    overflow-x: hidden;
+  }
+
+  /* app container */
+  .app-container {
+    overflow-x: hidden;
   }
 }
