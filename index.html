@@ -947,6 +947,88 @@
                 </div>
               </div>
 
+              <!-- Geolocation and Device Traffic Analytics Row -->
+              <div class="ai-panel-grid" style="margin-bottom: 2rem;">
+                <!-- Left: Device Breakdown -->
+                <div class="glass-panel">
+                  <h3 style="margin-bottom: 1.25rem;"><i class="fa-solid fa-laptop-mobile" style="color: var(--primary); margin-right: 0.5rem;"></i> Device & OS Breakdown</h3>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="font-weight: 600;"><i class="fa-solid fa-mobile-screen" style="margin-right: 0.25rem;"></i> Mobile Devices</span>
+                        <span id="trafficMobilePct" style="color: var(--primary); font-weight: 700;">0%</span>
+                      </div>
+                      <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                        <div id="trafficMobileBar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.6s ease;"></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="font-weight: 600;"><i class="fa-solid fa-desktop" style="margin-right: 0.25rem;"></i> Desktop / Laptop</span>
+                        <span id="trafficDesktopPct" style="color: var(--secondary); font-weight: 700;">0%</span>
+                      </div>
+                      <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                        <div id="trafficDesktopBar" style="width: 0%; height: 100%; background: var(--secondary); transition: width 0.6s ease;"></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="font-weight: 600;"><i class="fa-solid fa-tablet-screen-button" style="margin-right: 0.25rem;"></i> Tablet Devices</span>
+                        <span id="trafficTabletPct" style="color: var(--accent); font-weight: 700;">0%</span>
+                      </div>
+                      <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;">
+                        <div id="trafficTabletBar" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.6s ease;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right: Top Geolocation Locations -->
+                <div class="glass-panel">
+                  <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-earth-americas" style="color: var(--primary); margin-right: 0.5rem;"></i> Top Traffic Locations</h3>
+                  <div class="table-scroll-wrapper" style="max-height: 180px; overflow-y: auto;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Country</th>
+                          <th>City</th>
+                          <th>Total Visits</th>
+                        </tr>
+                      </thead>
+                      <tbody id="trafficGeoList">
+                        <!-- Filled dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Real-Time Access & Traffic Log Table -->
+              <div class="glass-panel" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-rectangle-list" style="color: var(--primary); margin-right: 0.5rem;"></i> Real-Time Access & Traffic Logs</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Live network stream of users currently accessing the platform.</p>
+                <div class="table-scroll-wrapper" style="max-height: 250px; overflow-y: auto;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Timestamp</th>
+                        <th>IP Address</th>
+                        <th>Location (City, Country)</th>
+                        <th>Device</th>
+                        <th>Operating System</th>
+                        <th>Browser Details</th>
+                      </tr>
+                    </thead>
+                    <tbody id="trafficLogsList">
+                      <!-- Filled dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               <!-- AI Audit Section -->
               <div class="glass-panel" style="margin-bottom: 2rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">

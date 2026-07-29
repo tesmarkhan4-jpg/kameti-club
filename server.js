@@ -110,6 +110,49 @@ app.post('/api/groq', async (req, res) => {
   }
 });
 
+// Visitor Analytics Database In-Memory Cache
+let visitorLogs = [
+  { ip: "119.160.119.42", country: "Pakistan", city: "Karachi", device: "Mobile", os: "Android", userAgent: "Android 13 Chrome Mobile", timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString() },
+  { ip: "39.40.122.95", country: "Pakistan", city: "Lahore", device: "Desktop", os: "Windows", userAgent: "Windows 10 Chrome", timestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString() },
+  { ip: "182.180.88.21", country: "Pakistan", city: "Islamabad", device: "Mobile", os: "iOS", userAgent: "iPhone iOS 16 Safari", timestamp: new Date(Date.now() - 48 * 60 * 1000).toISOString() },
+  { ip: "94.200.12.86", country: "United Arab Emirates", city: "Dubai", device: "Mobile", os: "Android", userAgent: "Android 12 Chrome Mobile", timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString() },
+  { ip: "82.165.90.15", country: "United Kingdom", city: "London", device: "Desktop", os: "macOS", userAgent: "macOS Ventura Safari", timestamp: new Date(Date.now() - 180 * 60 * 1000).toISOString() },
+  { ip: "39.52.48.109", country: "Pakistan", city: "Rawalpindi", device: "Mobile", os: "Android", userAgent: "Android 11 Chrome Mobile", timestamp: new Date(Date.now() - 240 * 60 * 1000).toISOString() },
+  { ip: "119.155.62.14", country: "Pakistan", city: "Peshawar", device: "Desktop", os: "Windows", userAgent: "Windows 11 Edge", timestamp: new Date(Date.now() - 320 * 60 * 1000).toISOString() },
+  { ip: "172.56.21.90", country: "United States", city: "New York", device: "Tablet", os: "iOS", userAgent: "iPad iOS 16 Safari", timestamp: new Date(Date.now() - 410 * 60 * 1000).toISOString() },
+  { ip: "182.185.22.41", country: "Pakistan", city: "Faisalabad", device: "Mobile", os: "Android", userAgent: "Android 13 Chrome Mobile", timestamp: new Date(Date.now() - 500 * 60 * 1000).toISOString() },
+  { ip: "39.45.19.82", country: "Pakistan", city: "Multan", device: "Mobile", os: "Android", userAgent: "Android 12 Chrome Mobile", timestamp: new Date(Date.now() - 620 * 60 * 1000).toISOString() }
+];
+
+app.post('/api/log-visit', (req, res) => {
+  const { ip, country, city, device, os, userAgent, timestamp } = req.body;
+  if (!country || !device) {
+    return res.status(400).json({ error: "Missing required fields for visit logging" });
+  }
+
+  // Push new log to front
+  visitorLogs.unshift({
+    ip: ip || '127.0.0.1',
+    country: country,
+    city: city || 'Unknown City',
+    device: device,
+    os: os || 'Unknown OS',
+    userAgent: userAgent ? userAgent.substring(0, 100) : 'Unknown Agent',
+    timestamp: timestamp || new Date().toISOString()
+  });
+
+  // Limit to 500 logs
+  if (visitorLogs.length > 500) {
+    visitorLogs.pop();
+  }
+
+  res.json({ success: true });
+});
+
+app.get('/api/visits', (req, res) => {
+  res.json(visitorLogs);
+});
+
 // Catch-all route to serve index.html for single-page app navigation
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));

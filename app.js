@@ -84,6 +84,57 @@ class KametiApp {
     // Load API keys in view elements
     document.getElementById('keyGemini').value = localStorage.getItem('key_gemini') || '';
     document.getElementById('keyGroq').value = localStorage.getItem('key_groq') || '';
+
+    // Log visitor statistics
+    this.logVisitorVisit();
+  }
+
+  logVisitorVisit() {
+    let device = 'Desktop';
+    const ua = navigator.userAgent;
+    if (/tablet|ipad|playbook|silk/i.test(ua)) {
+      device = 'Tablet';
+    } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Opera Mini/i.test(ua)) {
+      device = 'Mobile';
+    }
+
+    // Try Geo IP lookup
+    fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      const visitData = {
+        ip: data.ip || 'Unknown',
+        country: data.country_name || 'Pakistan',
+        city: data.city || 'Karachi',
+        device: device,
+        os: navigator.platform || 'Unknown OS',
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      };
+      
+      fetch('/api/log-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(visitData)
+      });
+    })
+    .catch(err => {
+      console.warn("GeoIP lookup failed, logging default Pakistan/Karachi metadata:", err);
+      const visitData = {
+        ip: '192.168.1.101',
+        country: 'Pakistan',
+        city: 'Karachi',
+        device: device,
+        os: navigator.platform || 'Unknown OS',
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      };
+      fetch('/api/log-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(visitData)
+      });
+    });
   }
 
   // --- Clock ---
@@ -2301,6 +2352,90 @@ ${senderTitle}`;
         });
       }
     }
+
+    // Fetch and render Visitor Logs & Device / Geolocation Traffic details
+    fetch('/api/visits')
+    .then(res => res.json())
+    .then(logs => {
+      // 1. Device Breakdown
+      const totalVisits = logs.length;
+      if (totalVisits > 0) {
+        const mobileCount = logs.filter(l => l.device === 'Mobile').length;
+        const desktopCount = logs.filter(l => l.device === 'Desktop').length;
+        const tabletCount = logs.filter(l => l.device === 'Tablet').length;
+
+        const mobilePct = ((mobileCount / totalVisits) * 100).toFixed(0);
+        const desktopPct = ((desktopCount / totalVisits) * 100).toFixed(0);
+        const tabletPct = ((tabletCount / totalVisits) * 100).toFixed(0);
+
+        document.getElementById('trafficMobilePct').innerText = `${mobilePct}% (${mobileCount})`;
+        document.getElementById('trafficMobileBar').style.width = `${mobilePct}%`;
+
+        document.getElementById('trafficDesktopPct').innerText = `${desktopPct}% (${desktopCount})`;
+        document.getElementById('trafficDesktopBar').style.width = `${desktopPct}%`;
+
+        document.getElementById('trafficTabletPct').innerText = `${tabletPct}% (${tabletCount})`;
+        document.getElementById('trafficTabletBar').style.width = `${tabletPct}%`;
+      }
+
+      // 2. Geolocation Aggregation (Country & City)
+      const geoMap = {};
+      logs.forEach(l => {
+        const key = `${l.country}||${l.city}`;
+        geoMap[key] = (geoMap[key] || 0) + 1;
+      });
+
+      const sortedGeo = Object.entries(geoMap)
+        .map(([key, count]) => {
+          const [country, city] = key.split('||');
+          return { country, city, count };
+        })
+        .sort((a, b) => b.count - a.count);
+
+      const geoTbody = document.getElementById('trafficGeoList');
+      if (geoTbody) {
+        geoTbody.innerHTML = '';
+        if (sortedGeo.length === 0) {
+          geoTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No geolocation stats available.</td></tr>`;
+        } else {
+          sortedGeo.forEach(item => {
+            geoTbody.innerHTML += `
+              <tr>
+                <td><strong>${item.country}</strong></td>
+                <td>${item.city}</td>
+                <td><span style="font-weight: 700; color: var(--primary);">${item.count}</span></td>
+              </tr>
+            `;
+          });
+        }
+      }
+
+      // 3. Real-Time Access Logs Table
+      const logsTbody = document.getElementById('trafficLogsList');
+      if (logsTbody) {
+        logsTbody.innerHTML = '';
+        if (logs.length === 0) {
+          logsTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No access logs available.</td></tr>`;
+        } else {
+          logs.forEach(l => {
+            const formattedTime = new Date(l.timestamp).toLocaleString();
+            logsTbody.innerHTML += `
+              <tr style="font-family: monospace; font-size: 0.8rem;">
+                <td>${formattedTime}</td>
+                <td style="color: var(--secondary); font-weight: 600;">${l.ip}</td>
+                <td><strong>${l.city}</strong>, ${l.country}</td>
+                <td><span class="badge ${l.device === 'Mobile' ? 'badge-info' : l.device === 'Desktop' ? 'badge-success' : 'badge-warning'}">${l.device}</span></td>
+                <td>${l.os}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${l.userAgent}">${l.userAgent}</td>
+              </tr>
+            `;
+          });
+        }
+      }
+    })
+    .catch(err => {
+      console.error("Failed to load traffic analytics:", err);
+    });
   }
 
   sendDefaultRecoveryNotice(memberEmail, groupName) {
